@@ -4,27 +4,13 @@ const lib = require('./lib')
 const log = console.log
 
 function suffix() {
-  let seg = []
-  let chaos
-
   let args = JSON.parse(JSON.stringify(arguments))
   args = args[0]
 
-  // log('suffix', args, typeof args)
-  for (let i in args) {
-    // log('  ', i, args[i])
-    if (typeof args[i] === 'number' || typeof args[i] === 'string')
-      seg.push(args[i])
-    else chaos = 1
-  }
-
-  if (chaos)
-    seg.push(cr.createHash('sha256')
-      .update(JSON.stringify(args))
-      .digest('hex')
-      .slice(0, 4))
-
-  return seg.join('_')
+  return args[0] + '_' + cr.createHash('sha256')
+    .update(JSON.stringify(args))
+    .digest('hex')
+    .slice(0, 4)
 }
 
 function signal(opt) {
