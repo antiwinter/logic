@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 
 const path = require('path')
+const fs = require('fs')
 const cli = require('commander')
 const pkg = require('./package.json')
+const reqs = require('require-from-string')
+const ps = require('child_process')
+
 const build = require('./builder')
 const log = console.log
 
@@ -16,7 +20,8 @@ cli
       mfs.push('tb')
     mfs.forEach(f => {
       try {
-        let m = require('./' + path.join(f))()
+        let src = fs.readFileSync(f, 'utf-8')
+        let m = reqs(src)()
         build(m)
       } catch (err) {
         log('cannot find module:', './' + path.join(f.replace(/\.js$/, '')))
@@ -26,6 +31,13 @@ cli
     })
   })
 
+cli
+  .command('sim')
+  .alias('simulate')
+  .description('simulte tb')
+  .action(() => {
+    ps.execSync(`iverilog -o build/a.vvp build/verilog/*.v && vvp build/a.vvp`)
+  })
 
 cli.on('command:*', () => {
   cli.help()
