@@ -67,6 +67,7 @@ module.exports = {
       $_subModules: [],
       $_snippet: [],
       $_pos: [],
+      $_pre: [],
       $_extractSignal(sigs, type) {
         for (let i in sigs)
           m[i] = signal({
@@ -194,6 +195,11 @@ module.exports = {
       },
       $pos(sig, snippet) {
         m.$_pos.push(snippet)
+        return m
+      },
+      $pre(snippet) {
+        m.$_pre.push(snippet)
+        return m
       }
     }
 

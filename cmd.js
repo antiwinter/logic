@@ -20,11 +20,13 @@ cli
       mfs.push('tb')
     mfs.forEach(f => {
       try {
+        log('abs path is', path.join(process.env.INIT_CWD, f))
         let src = fs.readFileSync(f, 'utf-8')
         let m = reqs(src)()
+        // let m = require(path.join(process.env.INIT_CWD, f))()
         build(m)
       } catch (err) {
-        log('cannot find module:', './' + path.join(f.replace(/\.js$/, '')))
+        log('error gen module:', './' + path.join(f.replace(/\.js$/, '')))
         log(err)
         process.exit()
       }

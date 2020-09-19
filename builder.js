@@ -80,7 +80,7 @@ function render(m) {
     s += `always @ (posedge clk) begin\n`
     regs.forEach(x => {
       if (!x.from) return
-      let p = translate(x.from)
+      let p = translate(x.from, x)
 
       if (p.width != x.width)
         log(`Warnning: load register <${x.name}:${x.width}, ${p.name}:${p.width}> width not match`)
@@ -94,6 +94,9 @@ function render(m) {
   }
 
   s += m.$_snippet.join('\n') + '\n\nendmodule\n'
+
+  if (m.$_pre.length)
+    s = m.$_pre.join('\n') + '\n' + s
 
   return s
 }
