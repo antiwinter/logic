@@ -102,15 +102,28 @@ function render(m) {
 }
 
 let _built = {}
+let counts = {}
 let base = './build/verilog'
+
 function build(m) {
-  if (_built[m.$name]) return
-  _built[m.$name] = 1
-  log('generating', m.$name)
-  if (!fs.existsSync(base)) fs.mkdirSync(base, { recursive: true })
-  fs.writeFileSync(`${base}/${m.$name}.v`, render(m), 'utf-8')
+
+  if (!counts[m.$name]) counts[m.$name] = { n: 0, regs: 0, bits: 0 }
+  counts[m.$name].n++
+
+  m.$_getSignal('reg').forEach(r => {
+    counts[m.$name].regs++
+    counts[m.$name].bits += r.width
+  })
+
+  if (!_built[m.$name]) {
+    log('generating', m.$name)
+    if (!fs.existsSync(base)) fs.mkdirSync(base, { recursive: true })
+    fs.writeFileSync(`${base}/${m.$name}.v`, render(m), 'utf-8')
+    _built[m.$name] = 1
+  }
 
   m.$_subModules.forEach(_m => build(_m))
+  return counts
 }
 
 module.exports = build

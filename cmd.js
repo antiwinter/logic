@@ -16,6 +16,7 @@ cli
   .command('gen <modules...>')
   .description('generate verilog from js modules')
   .action((mfs, cmd) => {
+    let counts
     if (!mfs.length)
       mfs.push('tb')
     mfs.forEach(f => {
@@ -24,13 +25,20 @@ cli
         let src = fs.readFileSync(f, 'utf-8')
         let m = reqs(src)()
         // let m = require(path.join(process.env.INIT_CWD, f))()
-        build(m)
+        counts = build(m)
       } catch (err) {
         log('error gen module:', './' + path.join(f.replace(/\.js$/, '')))
         log(err)
         process.exit()
       }
     })
+
+    let regBytes = 0
+    for (let k in counts)
+      regBytes += counts[k].n * counts[k].bits
+    regBytes /= 8
+    counts.regBytes = regBytes
+    log(counts)
   })
 
 cli
