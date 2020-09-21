@@ -96,6 +96,7 @@ module.exports = {
       $out() { },
       $wire() { },
       $reg() { },
+      $io() { },
       $_ins(_m) {
         // log('creating instance', _m)
         let ns = m.$_pickName('ins_' + _m.module.$name)
@@ -127,12 +128,12 @@ module.exports = {
         m.$_subModules.push(_m.module)
         return m.$prev = m[ns] = _m.port
       },
-      $ins(_m) {
+      $ins(_m, _get) {
         // log('out ins', _m)
         let __m = []
         if (Array.isArray(_m))
           __m = _m
-        else {
+        else if (typeof _m === 'object') {
           if (!_m.copy) _m.copy = 1
           for (let i = 0; i < _m.copy; i++)
             __m.push({
@@ -140,7 +141,11 @@ module.exports = {
               link: util._extend({}, _m.link),
               port: util._extend({}, _m.port)
             })
-        }
+        } else if (typeof _m === 'number' && _get) {
+          for (let i = 0; i < _m; i++)
+            __m.push(_get(i))
+        } else
+          throw 'bad ins requirement'
 
         let prev_ins
         for (let i = 0; i < __m.length; i++) {
@@ -189,7 +194,7 @@ module.exports = {
       }
     }
 
-    let types = ['in', 'out', 'wire', 'reg']
+    let types = ['in', 'out', 'io', 'wire', 'reg']
     types.forEach(t => {
       m['$' + t] = opt => m.$_extractSignal(opt, t)
     })

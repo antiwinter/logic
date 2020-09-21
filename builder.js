@@ -31,7 +31,15 @@ function render(m) {
     seg.push('output ' + (x.width > 1 ? `[${x.width - 1}:0] ` : '') + x.name)
   })
 
-  s += seg.join(', ') + ');\n\n'
+  m.$_getSignal('io').forEach(x => {
+    seg.push('inout ' + (x.width > 1 ? `[${x.width - 1}:0] ` : '') + x.name)
+  })
+
+  let l = seg.join(', ')
+  if (l < 80)
+    s += l
+  else s += '\n' + seg.map(x => '  ' + x).join(',\n')
+  s += ');\n\n'
 
   m.$_getSignal('wire').forEach(x => {
     s += 'wire  ' + (x.width > 1 ? `[${x.width - 1}:0] ` : '') + x.name + ';\n'
@@ -64,9 +72,9 @@ function render(m) {
       let p = translate(ports[k], _k)
 
       if (!_k)
-        log(`Warnning: ${name} cannot find original port ${k}`)
+        log(`Warning: ${m.$name} cannot find original port ${name}:${k}`)
       else if (p.width != _k.width)
-        log(`Warnning: ${name}: <${k}:${_k.width}, ${p.name}:${p.width}> width not match`)
+        log(`Warning: ${m.$name}: <${k}:${_k.width}, ${p.name}:${p.width}> width not match`)
 
 
       seg.push(`  .${k}  (${p.v})`)
@@ -83,14 +91,15 @@ function render(m) {
       let p = translate(x.from, x)
 
       if (p.width != x.width)
-        log(`Warnning: load register <${x.name}:${x.width}, ${p.name}:${p.width}> width not match`)
+        log(`Warning: ${m.$name} load register <${x.name}:${x.width}, ${p.name}:${p.width}> width not match`)
 
       s += `  ${x.name} <= ${p.v};\n`
     })
-
-    if (m.$_pos.length)
-      s += m.$_pos.join('\n') + '\n'
     s += 'end\n\n'
+  }
+
+  if (m.$_pos.length) {
+    s += `always @ (posedge clk) begin\n` + m.$_pos.join('\n') + '\nend\n\n'
   }
 
   s += m.$_snippet.join('\n') + '\n\nendmodule\n'
