@@ -15,6 +15,7 @@ cli.version(pkg.version).usage('<command> [option] <modules ...>')
 cli
   .command('gen <modules...>')
   .description('generate verilog from js modules')
+  .option('--flat', 'render into one file')
   .action((mfs, cmd) => {
     let counts
     if (!mfs.length)
@@ -25,7 +26,7 @@ cli
         let src = fs.readFileSync(f, 'utf-8')
         let m = reqs(src)()
         // let m = require(path.join(process.env.INIT_CWD, f))()
-        counts = build(m)
+        counts = build(m, cmd.flat)
       } catch (err) {
         log('error gen module:', './' + path.join(f.replace(/\.js$/, '')))
         log(err)
@@ -46,7 +47,7 @@ cli
   .alias('simulate')
   .description('simulte tb')
   .action(() => {
-    ps.execSync(`iverilog -o build/a.vvp build/verilog/*.v && vvp build/a.vvp`)
+    ps.execSync(`iverilog -o build/a.vvp build/*.v build/modules/*.v && vvp build/a.vvp`)
   })
 
 cli.on('command:*', () => {

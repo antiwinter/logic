@@ -112,9 +112,14 @@ function render(m) {
 
 let _built = {}
 let counts = {}
-let base = './build/verilog'
+let base = './build/modules'
 
-function build(m) {
+let single = ''
+
+function build(m, flat, isTop) {
+
+  if (isTop === undefined)
+    isTop = 1
 
   if (!counts[m.$name]) counts[m.$name] = { n: 0, regs: 0, bits: 0 }
   counts[m.$name].n++
@@ -124,14 +129,22 @@ function build(m) {
     counts[m.$name].bits += r.width
   })
 
+  m.$_subModules.forEach(_m => build(_m, flat, 0))
+
+  let isTb = m.$name.match(/^tb|^testbench/)
+
   if (!_built[m.$name]) {
     log('generating', m.$name)
     if (!fs.existsSync(base)) fs.mkdirSync(base, { recursive: true })
-    fs.writeFileSync(`${base}/${m.$name}.v`, render(m), 'utf-8')
+    if (flat && !isTb) {
+      single += render(m)
+    } else
+      fs.writeFileSync(`${isTb ? './build' : base}/${m.$name}.v`, render(m), 'utf-8')
     _built[m.$name] = 1
   }
 
-  m.$_subModules.forEach(_m => build(_m))
+  if (isTop && flat) fs.writeFileSync(`${base}/m.v`, single, 'utf-8')
+
   return counts
 }
 
