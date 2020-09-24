@@ -7,6 +7,24 @@ commander@^6.1.0:
   resolved "https://registry.npm.taobao.org/commander/download/commander-6.1.0.tgz#f8d722b78103141006b66f4c7ba1e97315ba75bc"
   integrity sha1-+Ncit4EDFBAGtm9Me6HpcxW6dbw=
 
+js-pixel-fonts@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.npm.taobao.org/js-pixel-fonts/download/js-pixel-fonts-1.5.0.tgz#35dbe993545a67f19960a43d48ca497bb258f333"
+  integrity sha1-Ndvpk1RaZ/GZYKQ9SMpJe7JY8zM=
+  dependencies:
+    loglevel "^1.6.1"
+    pngjs "^3.3.3"
+
+loglevel@^1.6.1:
+  version "1.7.0"
+  resolved "https://registry.npm.taobao.org/loglevel/download/loglevel-1.7.0.tgz?cache=0&sync_timestamp=1598447629552&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Floglevel%2Fdownload%2Floglevel-1.7.0.tgz#728166855a740d59d38db01cf46f042caa041bb0"
+  integrity sha1-coFmhVp0DVnTjbAc9G8ELKoEG7A=
+
+pngjs@^3.3.3:
+  version "3.4.0"
+  resolved "https://registry.npm.taobao.org/pngjs/download/pngjs-3.4.0.tgz#99ca7d725965fb655814eaf65f38f12bbdbf555f"
+  integrity sha1-mcp9clll+2VYFOr2XzjxK72/VV8=
+
 require-from-string@^2.0.2:
   version "2.0.2"
   resolved "https://registry.npm.taobao.org/require-from-string/download/require-from-string-2.0.2.tgz#89a7fdd938261267318eafe14f9c32e598c36909"

@@ -8,6 +8,7 @@ const reqs = require('require-from-string')
 const ps = require('child_process')
 
 const build = require('./builder')
+const relint = require('./relint')
 const log = console.log
 
 cli.version(pkg.version).usage('<command> [option] <modules ...>')
@@ -49,6 +50,20 @@ cli
   .action(() => {
     let out = ps.execSync(`iverilog -o build/a.vvp build/*.v build/modules/*.v && vvp build/a.vvp`)
     log(out.toString())
+  })
+
+cli
+  .command('relint <files...>')
+  .description('relint a .v file to pattern')
+  .option('--pt', 'the pattern string')
+  .action((fls, cmd) => {
+    try {
+      let src = fs.readFileSync(fls[0], 'utf-8')
+      if (!cmd.pt) cmd.pt = 'LJNB'
+      fs.writeFileSync(fls[0].replace(/\.v$/, '.relint.v'), relint(src, cmd.pt), 'utf-8')
+    } catch (err) {
+      log(err)
+    }
   })
 
 cli.on('command:*', () => {
