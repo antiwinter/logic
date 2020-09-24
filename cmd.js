@@ -47,7 +47,8 @@ cli
   .alias('simulate')
   .description('simulte tb')
   .action(() => {
-    ps.execSync(`iverilog -o build/a.vvp build/*.v build/modules/*.v && vvp build/a.vvp`)
+    let out = ps.execSync(`iverilog -o build/a.vvp build/*.v build/modules/*.v && vvp build/a.vvp`)
+    log(out.toString())
   })
 
 cli.on('command:*', () => {
