@@ -55,8 +55,9 @@ cli
 cli
   .command('relint <files...>')
   .description('relint a .v file to pattern')
-  .option('--pt', 'the pattern string')
+  .option('--pt <string>', 'the pattern string')
   .action((fls, cmd) => {
+    // log(cmd)
     try {
       let src = fs.readFileSync(fls[0], 'utf-8')
       if (!cmd.pt) cmd.pt = 'LJNB'

@@ -3,7 +3,20 @@ const log = console.log
 
 function render(s, pt) {
 
-  pt = renderPixels(pt, fonts.sevenPlus)
+  // log('pt is', pt)
+  let _pt
+
+  log('pt is', pt, pt.split('\\n'))
+  pt.split('\\n').forEach(p => {
+    p = renderPixels(p, fonts.sevenPlus)
+    if (!_pt)
+      _pt = p
+    else {
+      _pt.push(_pt[0].map(x => 0))
+      _pt = _pt.concat(p)
+    }
+  })
+  pt = _pt
 
   let area = 0
   s.forEach(x => area += x.length)
